@@ -1,7 +1,25 @@
 ---
-title: "final Stock-Market-Retirement"
+title: "Final Deliverable Stock-Market-Retirement"
 output: html_document
+author: Mohriz Murad, Rohan Rajesh, author3, author 4
 date: "2025-02-27"
 ---
+##Introduction: 
+```{r}
 
-# Test
+```
+
+##Setup: Loading Libraries and Data 
+
+
+##Research Q1 
+###Data / Visualization
+
+##Research Q2
+###Data / Visualization
+
+##Research Q3
+###Data / Visualization
+
+##Research Q4
+###Data / Visualization
