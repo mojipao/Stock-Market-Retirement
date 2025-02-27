@@ -1,0 +1,130 @@
+---
+title: "Final Project - Final Deliverable"
+author: "Abel, Paras, Tarun, Romesh"
+format: html
+---
+
+## Introduction:
+
+With electric vehicles (EVs) becoming increasingly popular, there’s a growing interest in how the surge in EVs might impact public safety on American roads. This project seeks to analyze whether the exponential increase in EVs aligns with safer roads or introduces new safety challenges for drivers and pedestrians alike. As we see EV adoption being celebrated for its environmental and cost benefits, a closer look at safety metrics offers a unique angle on the unintended consequences of this rapid technological shift. By exploring the connection between EV growth and trends in motor vehicle crashes, we aim to tell a story that digs into the real, data-backed impacts of EV adoption on road safety across the United States.
+
+Investigation: Engage readers with an important question: Are we trading one set of benefits for unforeseen risks? Thus, we are considering several factors to address this question. One guiding theory we are examining is: Do EVs have different crash rates or types of accidents compared to traditional internal combustion engine (ICE) vehicles? By analyzing crash rates in relation to EV growth, we can explore whether EVs themselves (due to weight, acceleration characteristics, or other design factors) correlate with Public Awareness and Adaptation.
+
+As a new technology, EVs bring features that may impact driver behavior and awareness—like rapid acceleration and quieter engines—which could influence accident types and rates. This angle explores how driving an EV changes driver and pedestrian experiences and habits on the road. Our primary audience includes policymakers, transportation authorities, and general readers interested in road safety, technology, and environmental sustainability. Policymakers and infrastructure planners will find these insights valuable in addressing safety needs as the EV population grows.
+
+
+
+## (Pre-Program Arrangements) Loading Libraries & Data
+
+```{r}
+library("dplyr")
+library("stringr")
+library("ggplot2")
+
+## Data from https://data.wa.gov/Demographics/Most-Common-New-Electric-Vehicles-by-Model/yu7n-qgtd
+
+electric_vehicle_df <-
+  read.csv("Electric_Vehicle_Title_and_Registration_Activity_20241205.csv")
+
+## Data from https://www.nhtsa.gov/data/crash-data-systems
+crash_data_df <-
+  read.csv("NHTSA_Crash_Data.csv")
+```
+
+## (Glimpse + Explanation)
+
+```{r}
+# EV Dataset
+glimpse(electric_vehicle_df)
+summary(electric_vehicle_df)
+nrow(electric_vehicle_df)
+
+# Crash Dataset
+glimpse(crash_data_df)
+summary(crash_data_df)
+nrow(crash_data_df)
+```
+
+### Explanations
+
+```{r}
+# Remove duplicates
+electric_vehicle_df_duplicates <- electric_vehicle_df %>%
+  group_by(State, Model.Year) %>%
+  summarise(count = n()) %>%
+  filter(count > 1)
+
+crash_data_df_duplicates <- crash_data_df %>%
+  group_by(State, Crash_Year) %>%
+  summarise(count = n()) %>%
+  filter(count > 1)
+
+electric_vehicle_df <- electric_vehicle_df %>%
+  distinct(State, Model.Year, .keep_all = TRUE)
+
+crash_data_df <- crash_data_df %>%
+  distinct(State, Crash_Year, .keep_all = TRUE)
+
+# joining the datasets on State and Year (Crash_Year and Model_Year)
+combined_df <- electric_vehicle_df %>%
+  right_join(crash_data_df, by = c("State" = "State", "Model.Year" = "Crash_Year"))
+
+# View combined data
+glimpse(combined_df)
+nrow(combined_df)
+head(combined_df)
+
+```
+
+3 questions with interactive visualizations. Each of these three sections should revolve around a specific question you have for your dataset (can be questions you came up with in earlier stages, or new questions). Each page should have at least one interactive visualization (e.g., use plotly) for exploring the question of interest. You should include a brief description of how your visualization helps answer (or at least provide some insight into) your question. If you would prefer to make fewer pages with more complexity, or if you have an unusually small team, check with your TA/professor.
+
+### Report on Joined Datasets
+
+This combined dataset has 200 rows of data and essentially presents to include all the crashes occured specifically in WA state and tells us if they're EV Cars or not (Crash_Year, EV_Indicator_1 & EV_Indicator_2, Vehicle_Make_1 & Vehicle_Make_1). AT the same time, this dataset also shows how many purchases of EV cars have been made in WA and their associated information (Model.Year, Make, Year, City).
+
+## Actions on Joined Datasets
+
+```{r}
+library(lubridate)
+
+# Clean the data (remove rows with NA values)
+clean_df <- combined_df %>%
+  filter(if_any(everything(), ~ !is.na(.)))
+
+# Extract year from Crash_Date
+crash_data_df <- crash_data_df %>%
+  mutate(Crash_Year = year(mdy(Crash_Date)))  # Convert Crash_Date to year
+
+# Summarize the data by Crash_Year
+summary_data <- crash_data_df %>%
+  group_by(Crash_Year) %>%
+  summarise(
+    Total_Crashes = n(),
+    EV_Crashes = sum(EV_Indicator_1 == "Yes", na.rm = TRUE)
+  )
+
+#total crashes and EV crashes over the years
+graph <- ggplot(summary_data, aes(x = Crash_Year)) +
+  geom_line(aes(y = Total_Crashes), color = "blue", size = 1, linetype = "solid") +  
+  geom_line(aes(y = EV_Crashes), color = "red", size = 1, linetype = "dashed") +
+  geom_point(aes(y = Total_Crashes), color = "blue", size = 2) +  
+  geom_point(aes(y = EV_Crashes), color = "red", size = 2) +
+  labs(
+    title = "Total Motor Vehicle Crashes vs EV Crashes Over the Years",
+    x = "Year",
+    y = "Number of Crashes",
+    color = "Crash Type"
+  ) +
+  scale_color_manual(values = c("blue", "red"), labels = c("Total Crashes", "EV Crashes")) +
+  scale_y_continuous(
+    breaks = seq(0, 150, by = 15),  
+    limits = c(0, 150)  
+  ) +
+  theme_minimal()
+
+# Display the graph
+print(graph)
+
+```
+
+A conclusion section of summary takeaways that hones in on at least 3 major takeaways from the project, which should be related to a specific aspect of your analysis. This section should include at least 250 words of text, but feel free to incorporate tables, graphics, or other elements necessary to convey your conclusions. \### Conclusion

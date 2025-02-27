@@ -1,0 +1,244 @@
+---
+title: "Final Project - Final Deliverable"
+author: "Tarun Tamilselvan, Paras Gautam, Abel Kidane, Romesh Mamidi"
+date: today
+format:
+  html:
+   embed-resources: true
+---
+
+## Introduction:
+
+With electric vehicles (EVs) becoming increasingly popular, there’s a growing interest in how the surge in EVs might impact public safety on American roads. This project seeks to analyze whether the exponential increase in EVs aligns with safer roads or introduces new safety challenges for drivers and pedestrians alike. As we see EV adoption being celebrated for its environmental and cost benefits, a closer look at safety metrics offers a unique angle on the unintended consequences of this rapid technological shift. By exploring the connection between EV growth and trends in motor vehicle crashes, we aim to tell a story that digs into the real, data-backed impacts of EV adoption on road safety across the United States.
+
+Investigation: Engage readers with an important question: Are we trading one set of benefits for unforeseen risks? Thus, we are considering several factors to address this question. One guiding theory we are examining is: Do EVs have different crash rates or types of accidents compared to traditional internal combustion engine (ICE) vehicles? By analyzing crash rates in relation to EV growth, we can explore whether EVs themselves (due to weight, acceleration characteristics, or other design factors) correlate with Public Awareness and Adaptation.
+
+As a new technology, EVs bring features that may impact driver behavior and awareness—like rapid acceleration and quieter engines—which could influence accident types and rates. This angle explores how driving an EV changes driver and pedestrian experiences and habits on the road. Our primary audience includes policymakers, transportation authorities, and general readers interested in road safety, technology, and environmental sustainability. Policymakers and infrastructure planners will find these insights valuable in addressing safety needs as the EV population grows.
+
+### (Pre-Program Arrangements) Loading Libraries & Data
+```{r}
+library("dplyr")
+library("stringr")
+library("ggplot2")
+library("plotly")
+
+
+## Data from https://data.wa.gov/Demographics/Most-Common-New-Electric-Vehicles-by-Model/yu7n-qgtd
+
+electric_vehicle_df <-
+  read.csv("Electric_Vehicle_Title_and_Registration_Activity_20241120.csv")
+
+## Data from https://www.nhtsa.gov/data/crash-data-systems
+crash_data_df <-
+  read.csv("NHTSA_Crash_Data.csv")
+```
+
+## Glimpse
+```{r}
+
+# EV Dataset
+glimpse(electric_vehicle_df)
+summary(electric_vehicle_df)
+nrow(electric_vehicle_df)
+
+# Crash Dataset
+glimpse(crash_data_df)
+summary(crash_data_df)
+nrow(crash_data_df)
+```
+
+## Interactive Map #1
+```{r}
+# clean and prepare the data
+ev_trend <- electric_vehicle_df %>%
+  filter(!is.na(Year) & Year > 2000) %>%
+  mutate(
+    Is_Tesla = ifelse(grepl("TESLA", Make, ignore.case = TRUE), 1, 0)
+  ) %>%
+  group_by(Year) %>%
+  summarise(
+    Total_EV_Purchases = n(),
+    Tesla_Purchases = sum(Is_Tesla, na.rm = TRUE)
+  ) %>%
+  ungroup()
+
+# interactive line plot
+ev_trend_plot <- plot_ly(
+  data = ev_trend,
+  x = ~Year,
+  y = ~Total_EV_Purchases,
+  type = 'scatter',
+  mode = 'lines + markers',
+  name = 'Total EV Purchases',
+  text = ~paste(
+    "Year: ", Year,
+    "<br>Total EV Purchases: ", Total_EV_Purchases,
+    "<br>Tesla Purchases: ", Tesla_Purchases
+  ),
+  hoverinfo = 'text',
+  line = list(color = 'blue')
+) %>%
+  add_trace(
+    y = ~Tesla_Purchases,
+    name = 'Tesla Purchases',
+    mode = 'lines+markers',
+    line = list(color = 'red')
+  ) %>%
+  layout(
+    title = "Linear Progression of EV Purchases by Year",
+    xaxis = list(title = "Year"),
+    yaxis = list(title = "Number of EV Purchases"),
+    legend = list(title = list(text = "EV Types"))
+  )
+
+ev_trend_plot
+```
+### Explanation of Interactive Visualization (#1)
+As depicted in the graph above which illustrates the increase in both Tesla and overall EV purchases in WA, it is apparent that the increase in the purchases on Telsa is positively correlated with the increase in the overall purchases of EVs. Therefore, this indicates that Tesla plays a major role in the overall consumption of EV cars.
+
+
+## Interactive Map #2
+```{r}
+# clean and prepare the data
+wa_crash_data <- crash_data_df %>%
+  filter(State == "WA") %>%
+  mutate(
+    EV_Involvement = case_when(
+      Vehicle_Type_1 == "EV" | Vehicle_Type_2 == "EV" ~ "EV",
+      TRUE ~ "Non-EV"
+    )
+  )
+
+wa_crash_summary <- wa_crash_data %>%
+  group_by(EV_Involvement, Crash_Cause) %>%
+  summarise(
+    total_crashes = n(),
+    fatalities = sum(Fatalities, na.rm = TRUE),
+    injuries = sum(Injuries, na.rm = TRUE)
+  ) %>%
+  ungroup()
+
+# interactive bar chart
+wa_interactive_crash_plot <- plot_ly(
+  data = wa_crash_summary,
+  x = ~EV_Involvement,
+  y = ~total_crashes,
+  color = ~Crash_Cause,
+  type = "bar",
+  text = ~paste(
+    "Crash Cause: ", Crash_Cause,
+    "<br>Total Crashes: ", total_crashes,
+    "<br>Fatalities: ", fatalities,
+    "<br>Injuries: ", injuries
+  ),
+  hoverinfo = "text"
+) %>%
+  layout(
+    title = "Comparison of EV vs. Non-EV Crashes by Cause in WA State",
+    xaxis = list(title = "Vehicle Type"),
+    yaxis = list(title = "Number of Crashes"),
+    barmode = "stack"
+  )
+
+wa_interactive_crash_plot
+```
+### Explanation of Interactive Visualization (#2)
+As depicted in the graph above which illustrates the cause that is best associated with both EV and non-EV crashes in the United States, it is apparent that non-EVs have resulted in significantly more car crashes than EVs. 
+
+
+## Interactive Visualization (#3)
+```{r}
+ev_trend_combined <- electric_vehicle_df %>%
+  filter(!is.na(Year) & Year > 2000) %>%
+  group_by(Year) %>%
+  summarise(
+    Total_EV_Purchases = n(),
+    Tesla_Purchases = sum(grepl("TESLA", Make, ignore.case = TRUE), na.rm = TRUE),
+    .groups = "drop"
+  )
+
+crash_trend_combined <- crash_data_df %>%
+  filter(!is.na(Crash_Year)) %>%
+  mutate(
+    EV_Related = ifelse(
+      grepl("EV", Vehicle_Type_1, ignore.case = TRUE) | 
+      grepl("EV", Vehicle_Type_2, ignore.case = TRUE), 
+      1, 0
+    )
+  ) %>%
+  group_by(Crash_Year) %>%
+  summarise(
+    EV_Crashes = sum(EV_Related, na.rm = TRUE),
+    Total_Crashes = n(),
+    Fatalities = sum(Fatalities, na.rm = TRUE),
+    Injuries = sum(Injuries, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+# ev purchases + crash per/yr
+combined_data <- ev_trend_combined %>%
+  full_join(crash_trend_combined, by = c("Year" = "Crash_Year")) %>%
+  mutate(Year = as.integer(Year))  # Convert to integer if it's not
+all_years <- data.frame(Year = seq(min(combined_data$Year, na.rm = TRUE),
+                                  max(combined_data$Year, na.rm = TRUE), by = 1))
+
+combined_data <- left_join(all_years, combined_data, by = "Year")
+combined_data[is.na(combined_data)] <- 0
+
+# interactive plot
+combined_plot <- plot_ly() %>%
+  add_trace(
+    data = combined_data,
+    x = ~Year,
+    y = ~Total_EV_Purchases,
+    type = "scatter",
+    mode = "lines+markers",
+    name = "Total EV Purchases",
+    line = list(color = "blue"),
+    text = ~paste("Year: ", Year, "<br>Total EV Purchases: ", Total_EV_Purchases),
+    hoverinfo = "text"
+  ) %>%
+  add_trace(
+    data = combined_data,
+    x = ~Year,
+    y = ~EV_Crashes,
+    type = "scatter",
+    mode = "lines+markers",
+    name = "EV-Related Crashes",
+    line = list(color = "red"),
+    text = ~paste("Year: ", Year, "<br>EV-Related Crashes: ", EV_Crashes),
+    hoverinfo = "text"
+  ) %>%
+  add_trace(
+    data = combined_data,
+    x = ~Year,
+    y = ~Tesla_Purchases,
+    type = "scatter",
+    mode = "lines+markers",
+    name = "Tesla Purchases",
+    line = list(color = "green"),
+    text = ~paste("Year: ", Year, "<br>Tesla Purchases: ", Tesla_Purchases),
+    hoverinfo = "text"
+  ) %>%
+  layout(
+    title = "EV Purchases vs. EV-Related Crashes (Actual Numbers)",
+    xaxis = list(title = "Year"),
+    yaxis = list(title = "Counts (Purchases/Crashes)", side = "left"),
+    legend = list(title = list(text = "Legend")),
+    hovermode = "closest"
+  )
+
+# Render the plot
+combined_plot
+```
+
+### Explanation of Interactive Visualization (#3)
+As depicted in the graph above which illustrates the increase in total EV purchases, EV-related crashes, and Tesla Purchases, it is apparent that there is a steady decline in EV-related crashes as there is a steady increase in the number of EV purchases. This, therefore, concludes that the increase in EV cars on the road has led to a decrease in car crashes. A point to make - the main reason as to why the EV-Related crashes are presented low in the graph is due to the fact that they have low amount of crashes; maybe because they're relatively new to the market?
+
+
+## Conclusion
+The first takeaway is the overall increase in the total number of crashes. The data clearly shows an upward trend in motor vehicle crashes, which could be attributed to factors such as the rising number of vehicles on the road and the growing driving population. As more vehicles are used, it’s expected that the number of accidents would naturally increase.
+
+A second important takeaway is the rise in crashes involving electric vehicles. While the number of total crashes is rising, the rate at which EV-related crashes occur appears to be growing at a different pace. This trend could be linked to the increasing number of electric vehicles on the road, as their adoption continues to accelerate. The data visualizations effectively highlight this difference, showing how EV-related crashes are becoming more prevalent as the EV population expands.
+
+Lastly, the project underscores the difference in crash rates between EVs and non-EVs. Despite the rise in EV-related crashes, non-electric vehicles are still involved in more crashes overall. This is primarily because electric vehicles are a relatively new addition to the roads, and their numbers are still catching up. However, as the number of EVs continues to grow, the rate of EV-related crashes is expected to increase as well, closely mirroring the trend in overall vehicle crashes. These insights emphasize the evolving landscape of road safety as electric vehicles become more widespread.

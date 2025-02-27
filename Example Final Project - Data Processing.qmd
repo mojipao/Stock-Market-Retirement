@@ -1,0 +1,137 @@
+---
+title: "Final Project - Data Processing"
+author: "Abel, Paras, Tarun, Romesh"
+format:
+  html:
+     embed-resources: true
+---
+
+## (Pre-Program Arrangements) Loading Libraries & Data
+
+```{r}
+#| warning: false
+library("dplyr")
+library("stringr")
+library("ggplot2")
+
+## Data from https://data.wa.gov/Demographics/Most-Common-New-Electric-Vehicles-by-Model/yu7n-qgtd
+
+electric_vehicle_df <-
+  read.csv("Electric_Vehicle_Title_and_Registration_Activity_20241120.csv")
+
+## Data from https://www.nhtsa.gov/data/crash-data-systems
+crash_data_df <- 
+  read.csv("NHTSA_Crash_Data.csv")
+```
+
+## (Glimpse + Explanation)
+
+```{r}
+# EV Dataset
+glimpse(electric_vehicle_df)
+summary(electric_vehicle_df)
+nrow(electric_vehicle_df)
+
+# Crash Dataset
+glimpse(crash_data_df)
+summary(crash_data_df)
+nrow(crash_data_df)
+```
+
+### Explanations:
+
+**Electric Vehicle Dataset Overview**: The Electric Vehicle Dataset contains information about EV registration, including details like VIN, Model_Year, Make, Model, Sale_Price, Transaction_Date, and geographic data such as State and City (total 16 columns). It has a total of 1,048,575 rows. Upon inspecting the data using glimpse and summary, we find that the dataset includes a variety of EV manufacturers, with common entries for brands like Tesla and Nissan. The dataset spans multiple states but predominantly focuses on Washington State.
+
+**Crash Dataset Overview**: The Crash Dataset provides information on motor vehicle crashes, with details such as Crash_Date, Crash_Severity, Vehicle_Type_1, EV_Indicator_1, and Driver_Age_1. Geographic details like State and Year are also present (total 28 columns). This dataset contains 10,000 rows. Using glimpse and summary, it shows a range of crash severities from minor to fatal, and it indicates whether EVs were involved in specific crashes through the EV_Indicator column. Majority crashes are categorized by the type of vehicles involved, environmental conditions, and contributing factors like speeding or alcohol use.
+
+## Data Joining
+
+**Joining Strategy:** Right now, we are going to be joining these datasets using common columns that can link the vehicle information with crash data.
+
+To be more specific, we will join the datasets using the State column to align geographic locations and the Year column (Model_Year from the electric vehicle dataset and Year from the crash dataset) to match data across the same time periods, enabling an analysis of trends in EV registrations and crash occurrences at the state level over time.
+
+```{r}
+# Remove duplicates
+electric_vehicle_df_duplicates <- electric_vehicle_df %>%
+  group_by(State, Model.Year) %>%
+  summarise(count = n()) %>%
+  filter(count > 1)
+
+crash_data_df_duplicates <- crash_data_df %>%
+  group_by(State, Crash_Year) %>%
+  summarise(count = n()) %>%
+  filter(count > 1)
+
+electric_vehicle_df <- electric_vehicle_df %>%
+  distinct(State, Model.Year, .keep_all = TRUE)
+
+crash_data_df <- crash_data_df %>%
+  distinct(State, Crash_Year, .keep_all = TRUE)
+
+# joining the datasets on State and Year (Crash_Year and Model_Year)
+combined_df <- electric_vehicle_df %>%
+  right_join(crash_data_df, by = c("State" = "State", "Model.Year" = "Crash_Year"))
+
+# View combined data
+glimpse(combined_df)
+nrow(combined_df)
+head(combined_df)
+
+```
+
+### Report on Joined Datasets
+
+This combined dataset has 200 rows of data and essentially presents to include all the crashes occured specifically in WA state and tells us if they're EV Cars or not (Crash_Year, EV_Indicator_1 & EV_Indicator_2, Vehicle_Make_1 & Vehicle_Make_1). AT the same time, this dataset also shows how many purchases of EV cars have been made in WA and their associated information (Model.Year, Make, Year, City).
+
+## Actions on Joined Datasets
+
+```{r}
+# Clean the data (remove rows with NA values)
+clean_df <- combined_df %>%
+  filter(if_any(everything(), ~ !is.na(.)))
+
+# Extract year from Crash_Date
+crash_data_df <- crash_data_df %>%
+  mutate(Crash_Year = year(mdy(Crash_Date)))  # Convert Crash_Date to year
+
+# Summarize the data by Crash_Year
+summary_data <- crash_data_df %>%
+  group_by(Crash_Year) %>%
+  summarise(
+    Total_Crashes = n(),
+    EV_Crashes = sum(EV_Indicator_1 == "Yes", na.rm = TRUE) 
+  )
+
+#total crashes and EV crashes over the years
+graph <- ggplot(summary_data, aes(x = Crash_Year)) +
+  geom_line(aes(y = Total_Crashes), color = "blue", size = 1, linetype = "solid") +   
+  geom_line(aes(y = EV_Crashes), color = "red", size = 1, linetype = "dashed") + 
+  geom_point(aes(y = Total_Crashes), color = "blue", size = 2) +  
+  geom_point(aes(y = EV_Crashes), color = "red", size = 2) + 
+  labs(
+    title = "Total Motor Vehicle Crashes vs EV Crashes Over the Years",
+    x = "Year",
+    y = "Number of Crashes",
+    color = "Crash Type"
+  ) +
+  scale_color_manual(values = c("blue", "red"), labels = c("Total Crashes", "EV Crashes")) +
+  scale_y_continuous(
+    breaks = seq(0, 150, by = 15),  
+    limits = c(0, 150)  
+  ) +
+  theme_minimal()
+
+# Display the graph
+print(graph)
+
+```
+
+### Reasoning
+
+Removing Duplicates: We removed duplicate rows from both the electric vehicle dataset (electric_vehicle_df) and the crash dataset (crash_data_df) by grouping the data by relevant columns and checking for duplicates. We thought this was necessary because duplicates could skew the analysis, so we filter out rows where the same combination of State and Model.Year (for EV data) or State and Crash_Year (for crash data) occurs more than once. AT the same time, using the clean_df, I use the filter(if_any(...)) function to remove rows where any column contains an NA value. Missing data can distort analysis, so this cleaning step ensures that all rows used in the analysis contain complete information for every column.
+
+Joining the Datasets: The electric_vehicle_df and crash_data_df are joined using the right_join() function on the State and Year columns, with the goal of combining the datasets on the common columns (State and Year). By joining these datasets, we can investigate the relationship between electric vehicle crashes (from the EV dataset) and motor vehicle crashes (from the crash dataset) in Washington state.
+
+Extracting the Year from Crash_Date: The Crash_Date is transformed into just the year using the year() function, which is necessary for the analysis to group crashes by year. This step is crucial because we want to track trends in crashes by year, and Crash_Date typically contains a full date (e.g., "2024-11-01"), so extracting only the year simplifies this process.
+
+Graphing: I use ggplot2 to create a graph with two lines: one representing total crashes and the other representing EV crashes. Both are plotted over the years. This visualization compares the trend of total crashes with the trend of EV crashes over time. By using two lines, it's easy to see how EV crashes relate to the overall crash rate. Additionally, I’ve customized the y-axis to have a consistent range (from 0 to 150) and used color differentiation (blue for total crashes and red for EV crashes).
