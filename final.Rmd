@@ -9,9 +9,9 @@ date: "2025-02-27"
 library(tidyverse)
 getwd()
 # Read the datasets
-stocks <- read_delim("../../Data/sp500-monthly.csv")
-metrics <- read_delim("../../Data/Cost_of_Living_and_Income_Extended.csv")
-cpi_data <- read_delim("../../Data/CPIAUCSL.csv")
+stocks <- read_delim("sp500-monthly.csv")
+metrics <- read_delim("Cost_of_Living_and_Income_Extended.csv")
+cpi_data <- read_delim("CPIAUCSL.csv")
 
 # Convert Date column in S&P 500 dataset to Date type
 stocks$Date <- as.Date(stocks$Date)
@@ -62,18 +62,6 @@ merged_data <- merged_data %>%
     Transportation_Cost = (Transportation_Cost_Percentage / 100) * Cost_of_Living,
     Tax_Cost = (Tax_Rate / 100) * Cost_of_Living
   )
-
-# Display row counts before and after merging for validation
-print(paste("Row count of sp500_filtered:", nrow(sp500_filtered)))
-print(paste("Row count of cpi_yearly:", nrow(cpi_yearly)))
-print(paste("Row count of metrics:", nrow(metrics)))
-print(paste("Row count of merged_data:", nrow(merged_data)))
-
-# Display the merged dataset
-print(merged_data)
-```
-```{r}
-head(cpi)
 ```
 
 ##Introduction: 
@@ -132,3 +120,19 @@ ggplot(merged_data, aes(x = Housing_Cost, y = Avg_SP500_Close)) +
 
 ##Research Q4
 ###Data / Visualization
+```{r}
+merged_data_summary <- merged_data %>%
+  group_by(Year, Is_US) %>%
+  summarize(Avg_Housing_Cost = mean(Housing_Cost, na.rm = TRUE))
+
+
+ggplot(merged_data_summary, aes(x = Year, y = Avg_Housing_Cost, color = Is_US, group = Is_US)) +
+  geom_line(size = 1.2) +
+  geom_point(size = 2) +
+  labs(title = "Housing Cost Trends Over Time",
+       x = "Year",
+       y = "Average Housing Cost",
+       color = "Country Type") +
+  scale_color_manual(values = c("US" = "blue", "Non-US" = "red"))
+```
+
