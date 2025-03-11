@@ -9,9 +9,9 @@ date: "2025-02-27"
 library(tidyverse)
 getwd()
 # Read the datasets
-stocks <- read_delim("../../Data/sp500-monthly.csv")
-metrics <- read_delim("../../Data/Cost_of_Living_and_Income_Extended.csv")
-cpi_data <- read_delim("../../Data/CPIAUCSL.csv")
+stocks <- read_delim("sp500-monthly.csv")
+metrics <- read_delim("Cost_of_Living_and_Income_Extended.csv")
+cpi_data <- read_delim("CPIAUCSL.csv")
 
 # Convert Date column in S&P 500 dataset to Date type
 stocks$Date <- as.Date(stocks$Date)
@@ -23,35 +23,33 @@ stocks$Year <- as.numeric(stocks$Year)
 cpi_data$Year <- format(cpi_data$observation_date, "%Y")
 cpi_data$Year <- as.numeric(cpi_data$Year)
 
-# Compute the average yearly CPI
+# Compute the total yearly CPI without using aggregate or summarise functions
 cpi_yearly <- cpi_data %>% 
   group_by(Year) %>% 
-  summarize(Avg_CPI = mean(CPIAUCSL, na.rm = TRUE))
+  mutate(Avg_CPI = sum(CPIAUCSL, na.rm = TRUE) / length(CPIAUCSL)) %>% 
+  select(Year, Avg_CPI)
 
-# Filter S&P 500 data for the years 2000-2023
-sp500_filtered <- stocks %>% 
-  filter(Year >= 2000 & Year <= 2023) %>% 
+# Filter S&P 500 data for the years 2000-2023 without aggregate
+sp500_filtered <- subset(stocks, Year >= 2000 & Year <= 2023)
+sp500_filtered <- sp500_filtered %>% 
   group_by(Year) %>% 
-  summarize(Avg_SP500_Close = mean(Close, na.rm = TRUE))
+  mutate(Avg_SP500_Close = sum(Close, na.rm = TRUE) / length(Close)) %>% 
+  select(Year, Avg_SP500_Close)
 
-# Filter cost of living data for only United States
-us_cost_of_living <- metrics %>% 
-  filter(Country == "United States") %>% 
-  select(-Country) %>% 
-  mutate(Country = "United States")
 
-# Merge S&P 500, CPI, and cost of living datasets
-merged_data <- sp500_filtered %>% 
-  left_join(cpi_yearly, by = "Year") %>% 
-  left_join(us_cost_of_living, by = "Year")
+metrics <- metrics %>% 
+  mutate(Is_US = ifelse(Country == "United States", "US", "Non-US"))
+
+# Merge datasets using by.x and by.y
+merged_data <- merge(sp500_filtered, cpi_yearly, by.x = "Year", by.y = "Year", all.x = TRUE)
+merged_data <- merge(merged_data, metrics, by.x = "Year", by.y = "Year", all.x = TRUE)
 
 # Correct numerical values using Cost of Living column instead of CPI
-merged_data <- merged_data %>% 
-  mutate(Housing_Cost = (Housing_Cost_Percentage / 100) * Cost_of_Living,
-         Healthcare_Cost = (Healthcare_Cost_Percentage / 100) * Cost_of_Living,
-         Education_Cost = (Education_Cost_Percentage / 100) * Cost_of_Living,
-         Transportation_Cost = (Transportation_Cost_Percentage / 100) * Cost_of_Living,
-         Tax_Cost = (Tax_Rate / 100) * Cost_of_Living)  # Add numerical tax cost column
+merged_data$Housing_Cost <- (merged_data$Housing_Cost_Percentage / 100) * merged_data$Cost_of_Living
+merged_data$Healthcare_Cost <- (merged_data$Healthcare_Cost_Percentage / 100) * merged_data$Cost_of_Living
+merged_data$Education_Cost <- (merged_data$Education_Cost_Percentage / 100) * merged_data$Cost_of_Living
+merged_data$Transportation_Cost <- (merged_data$Transportation_Cost_Percentage / 100) * merged_data$Cost_of_Living
+merged_data$Tax_Cost <- (merged_data$Tax_Rate / 100) * merged_data$Cost_of_Living
 
 # Display the merged dataset
 print(merged_data)
@@ -107,7 +105,7 @@ ggplot(merged_data, aes(x = Year)) +
 The correlation between average individual health care cost per year in the United States and the S&P 500 during the years 2000-2023 is a very weak positive relationship.This means there is no strong linear relationship between tehse two metrics. This can be attributed to other sectors like techonological companies or consumer good companies in the S&P have larger impact on the movement of the S&P 500. Even though healthcare costs have been steadily rising in the United States, based on this data, it does not impact the S&P's overall performance.
 
 ```{r}
-ggplot(merged_data, aes(x = Healthcare_Cost, y = Avg_SP500_Close)) +
+ggplot(merged_data, aes(x = Housing_Cost, y = Avg_SP500_Close)) +
   geom_point(color = "darkred", size = 1.3, alpha = 0.75) +
   labs(title = "Correlation between Healthcare Cost and S&P 500 from 2000 to 2023",
        x = "Average Individual Healthcare Cost (USD)",
