@@ -65,9 +65,21 @@ As retirement
 
 ##Setup: Loading Libraries and Data 
 
-
 ##Research Q1 
 ###Data / Visualization
+What is the correlation of S&P 500 data against the average consumer price index average of U.S Cities, from 2010 - 2023? 
+
+The closing price is the cash value of the last transacted price before the market closes. It is used by investors to measure the stock markets performance. The consumer price index contains numbers that measure changes in the prices of goods and services purchased by house holds in US cities every year.These CPI values are calculated as the weighted averages of price changes for all US cities. This data was collected over the duration of 2010 to 2023.
+```{r Research Question 1}
+merged_data %>%
+  ggplot(aes(Avg_SP500_Close, Avg_CPI)) + geom_line() +
+   labs(x = "S&P 500 Closing Price",
+        y = "Consumer Price Index",
+        title = paste("S&P 500 Closing Price vs Consumer Price Index from 2010 to 2023 per year"))
+```
+After looking at this visualization, one can conclude that as the S&P 500 Closing Price increases, the Consumer Price Index increases as well. If the closing price is increasing, this means the stock market is performing better. Similarly, if the CPI is increasing, this means that the average price of goods purchased in US cities is increasing, meaning that people are spending more and there is economic growth. Ultimately, this trend suggests that strength in stock market performance can lead to economic growth. 
+This data was collected from 2010 to 2023 and is monthly. For starters, it is essential to acknowledge that both the trends in the S&P 500 and CPI for US Cities can be affected by the same confounding factors such as inflation, the employment rate, and geopolitical events such as trade restrictions. Furthermore, correlation does not imply causation.
+While creating an experiment is not ethically feasible, to improve upon our findings, we could obtain data on some of the confounding variables such as inflation, the employment rate, and other geopolitical and economic factors. We could create visualizations on the trends between these factors and the S&P 500 and CPI. This will give us insight into causal factors. 
 
 ##Research Q2
 ###Data / Visualization
