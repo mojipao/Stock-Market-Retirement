@@ -4,10 +4,51 @@ output: html_document
 author: Mohriz Murad, Rohan Rajesh, author3, author 4
 date: "2025-02-27"
 ---
-##Introduction: 
-```{r}
 
+```{r}
+library(tidyverse)
+getwd()
+cpi <- read_delim("../../Data/cpi.csv", delim = ",")
+stocks <- read_delim("../../Data/sp500-monthly.csv")
+metrics <- read_delim("../../Data/Cost_of_Living_and_Income_Extended.csv")
+
+##Merging the Datasets of stocks for 2000-2023 and associated metrics, key being time
+
+# Read the datasets
+stocks <- read_delim("../../Data/sp500-monthly.csv")
+metrics <- read_delim("../../Data/Cost_of_Living_and_Income_Extended.csv")
+
+# Convert Date column in S&P 500 dataset to Date type
+stocks$Date <- as.Date(stocks$Date)
+
+# Extract year from Date column
+stocks$Year <- format(stocks$Date, "%Y")
+stocks$Year <- as.numeric(stocks$Year)
+
+# Filter S&P 500 data for the years 2000-2023
+sp500_filtered <- stocks %>% 
+  filter(Year >= 2000 & Year <= 2023) %>% 
+  group_by(Year) %>% 
+  summarize(Avg_SP500_Close = mean(Close, na.rm = TRUE))
+
+# Filter cost of living data for only United States
+us_cost_of_living <- metrics %>% 
+  filter(Country == "United States") %>% 
+  select(-Country) %>% 
+  mutate(Country = "United States")
+
+# Merge both datasets by Year
+merged_data <- merge(sp500_filtered, us_cost_of_living, by = "Year", all.x = TRUE)
+
+# Display the merged dataset for all metrics associated with the US 
+print(merged_data)
 ```
+```{r}
+head(cpi)
+```
+
+##Introduction: 
+As retirement
 
 ##Setup: Loading Libraries and Data 
 
@@ -17,6 +58,10 @@ date: "2025-02-27"
 
 ##Research Q2
 ###Data / Visualization
+```{r}
+
+```
+
 
 ##Research Q3
 ###Data / Visualization
