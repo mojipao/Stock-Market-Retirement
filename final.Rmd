@@ -26,13 +26,13 @@ cpi_data$Year <- as.numeric(cpi_data$Year)
 # Compute the average yearly CPI
 cpi_yearly <- cpi_data %>% 
   group_by(Year) %>% 
-  summarise(Avg_CPI = mean(CPIAUCSL, na.rm = TRUE))
+  summarize(Avg_CPI = mean(CPIAUCSL, na.rm = TRUE))
 
 # Filter S&P 500 data for the years 2000-2023
 sp500_filtered <- stocks %>% 
   filter(Year >= 2000 & Year <= 2023) %>% 
   group_by(Year) %>% 
-  summarise(Avg_SP500_Close = mean(Close, na.rm = TRUE))
+  summarize(Avg_SP500_Close = mean(Close, na.rm = TRUE))
 
 # Filter cost of living data for only United States
 us_cost_of_living <- metrics %>% 
@@ -84,12 +84,35 @@ While creating an experiment is not ethically feasible, to improve upon our find
 ##Research Q2
 ###Data / Visualization
 ```{r}
+ggplot(merged_data, aes(x = Year)) +
+  geom_bar(aes(y = Tax_Rate, fill = "Tax Rate"), stat = "identity", position = "dodge", alpha = 0.6) +
+  geom_bar(aes(y = Avg_SP500_Close / max(Avg_SP500_Close) * max(Tax_Rate), fill = "S&P 500"), stat = "identity", position = "dodge", alpha = 0.6) +
+  geom_smooth(aes(y = Tax_Rate, color = "Tax Rate Trend"), method = "lm", se = FALSE, size = 1.2) +
+  geom_smooth(aes(y = Avg_SP500_Close / max(Avg_SP500_Close) * max(Tax_Rate), color = "S&P 500 Trend"), method = "lm", se = FALSE, size = 1.2) +
+  scale_fill_manual(values = c("red", "blue")) +
+  scale_color_manual(values = c("darkred", "darkblue")) +
+  labs(title = "Tax Rate vs S&P 500 Over Time with Trend Lines",
+       x = "Year",
+       y = "Scaled Values",
+       fill = "Legend",
+       color = "Trend Lines") +
+  theme_minimal()
 
 ```
 
 
 ##Research Q3
 ###Data / Visualization
+
+The correlation between average individual health care cost per year in the United States and the S&P 500 during the years 2000-2023 is a very weak positive relationship.This means there is no strong linear relationship between tehse two metrics. This can be attributed to other sectors like techonological companies or consumer good companies in the S&P have larger impact on the movement of the S&P 500. Even though healthcare costs have been steadily rising in the United States, based on this data, it does not impact the S&P's overall performance.
+
+```{r}
+ggplot(merged_data, aes(x = Healthcare_Cost, y = Avg_SP500_Close)) +
+  geom_point(color = "darkred", size = 1.3, alpha = 0.75) +
+  labs(title = "Correlation between Healthcare Cost and S&P 500 from 2000 to 2023",
+       x = "Average Individual Healthcare Cost (USD)",
+       y = "Average S&P 500 Closing Price")
+```
 
 ##Research Q4
 ###Data / Visualization
