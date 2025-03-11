@@ -8,28 +8,31 @@ date: "2025-02-27"
 ```{r}
 library(tidyverse)
 getwd()
-cpi <- read_delim("../../Data/cpi.csv", delim = ",")
-stocks <- read_delim("../../Data/sp500-monthly.csv")
-metrics <- read_delim("../../Data/Cost_of_Living_and_Income_Extended.csv")
-
-##Merging the Datasets of stocks for 2000-2023 and associated metrics, key being time
-
 # Read the datasets
 stocks <- read_delim("../../Data/sp500-monthly.csv")
 metrics <- read_delim("../../Data/Cost_of_Living_and_Income_Extended.csv")
+cpi_data <- read_delim("../../Data/CPIAUCSL.csv")
 
 # Convert Date column in S&P 500 dataset to Date type
 stocks$Date <- as.Date(stocks$Date)
+cpi_data$observation_date <- as.Date(cpi_data$observation_date)
 
 # Extract year from Date column
 stocks$Year <- format(stocks$Date, "%Y")
 stocks$Year <- as.numeric(stocks$Year)
+cpi_data$Year <- format(cpi_data$observation_date, "%Y")
+cpi_data$Year <- as.numeric(cpi_data$Year)
+
+# Compute the average yearly CPI
+cpi_yearly <- cpi_data %>% 
+  group_by(Year) %>% 
+  summarise(Avg_CPI = mean(CPIAUCSL, na.rm = TRUE))
 
 # Filter S&P 500 data for the years 2000-2023
 sp500_filtered <- stocks %>% 
   filter(Year >= 2000 & Year <= 2023) %>% 
   group_by(Year) %>% 
-  summarize(Avg_SP500_Close = mean(Close, na.rm = TRUE))
+  summarise(Avg_SP500_Close = mean(Close, na.rm = TRUE))
 
 # Filter cost of living data for only United States
 us_cost_of_living <- metrics %>% 
@@ -37,10 +40,20 @@ us_cost_of_living <- metrics %>%
   select(-Country) %>% 
   mutate(Country = "United States")
 
-# Merge both datasets by Year
-merged_data <- merge(sp500_filtered, us_cost_of_living, by = "Year", all.x = TRUE)
+# Merge S&P 500, CPI, and cost of living datasets
+merged_data <- sp500_filtered %>% 
+  left_join(cpi_yearly, by = "Year") %>% 
+  left_join(us_cost_of_living, by = "Year")
 
-# Display the merged dataset for all metrics associated with the US 
+# Correct numerical values using Cost of Living column instead of CPI
+merged_data <- merged_data %>% 
+  mutate(Housing_Cost = (Housing_Cost_Percentage / 100) * Cost_of_Living,
+         Healthcare_Cost = (Healthcare_Cost_Percentage / 100) * Cost_of_Living,
+         Education_Cost = (Education_Cost_Percentage / 100) * Cost_of_Living,
+         Transportation_Cost = (Transportation_Cost_Percentage / 100) * Cost_of_Living,
+         Tax_Cost = (Tax_Rate / 100) * Cost_of_Living)  # Add numerical tax cost column
+
+# Display the merged dataset
 print(merged_data)
 ```
 ```{r}
