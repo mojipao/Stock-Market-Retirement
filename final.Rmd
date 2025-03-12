@@ -107,7 +107,7 @@ ggplot(merged_data, aes(x = Year)) +
 ##Research Q3
 ###Data / Visualization
 
-The correlation between the U.S housing costs and S&P is slightly positive as from 2000-2012, we can see that as the S&P 500 was increasing, the Housing market was pretty volatile going up and down. We can see that the relationship is positive as the S&P 500 and Housing Market both are increasing since 2012.
+The correlation between the U.S housing costs and S&P is slightly positive as from 2000-2012, we can see that as the S&P 500 was increasing, the Housing market was pretty volatile going up and down. We can see that the relationship is positive, as the S&P 500 and Housing Market both are increasing since 2012. It's important to note the relationship is not linear or directly proportional. It's important to note the S&P 500 often reacts more to monetary policies, whereas the housing market is impacted more by demographic shifts. The correlation in this graph provides evidence that while markets move together in response to economic policies at the time, the movement between these two markets can be attributed to other reasons. The correlation between these two indicators provides insight into investment strategies for the future.
 
 ```{r}
 
