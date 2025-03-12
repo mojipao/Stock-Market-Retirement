@@ -111,11 +111,23 @@ ggplot(merged_data, aes(x = Year)) +
 The correlation between average individual health care cost per year in the United States and the S&P 500 during the years 2000-2023 is a very weak positive relationship.This means there is no strong linear relationship between tehse two metrics. This can be attributed to other sectors like techonological companies or consumer good companies in the S&P have larger impact on the movement of the S&P 500. Even though healthcare costs have been steadily rising in the United States, based on this data, it does not impact the S&P's overall performance.
 
 ```{r}
-ggplot(merged_data, aes(x = Housing_Cost, y = Avg_SP500_Close)) +
-  geom_point(color = "darkred", size = 1.3, alpha = 0.75) +
-  labs(title = "Correlation between Healthcare Cost and S&P 500 from 2000 to 2023",
-       x = "Average Individual Healthcare Cost (USD)",
-       y = "Average S&P 500 Closing Price")
+
+merged_data_us <- merged_data %>%
+  filter(Is_US == "US") %>%
+  group_by(Year) %>%
+  summarize(Avg_Housing_Cost = mean(Housing_Cost * 10, na.rm = TRUE),
+            Avg_SP500_Close = mean(Avg_SP500_Close, na.rm = TRUE))
+
+ggplot() +
+  geom_line(data = merged_data_us, aes(x = Year, y = Avg_Housing_Cost, color = "U.S. Housing Costs"), size = 1.2) +
+  geom_line(data = merged_data_us, aes(x = Year, y = Avg_SP500_Close * 10, color = "S&P 500"), size = 1.2) +
+  labs(title = "U.S. Housing Costs vs. S&P 500 Over Time",
+       x = "Year",
+       y = "S&P Closing Values",
+       color = "Legend") +
+  scale_y_continuous(name = "Average Housing Cost (Scaled)",
+                     sec.axis = sec_axis(~ . / 10, name = "Avg S&P 500 Close Price (Scaled by 10)")) 
+  
 ```
 
 ##Research Q4
