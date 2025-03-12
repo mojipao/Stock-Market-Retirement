@@ -132,6 +132,8 @@ ggplot() +
 
 ##Research Q4
 ###Data / Visualization
+The long-term trends in average housing costs have some striking dissimilarities for the United States and non-U.S. countries for the years 2000 to 2023. The U.S. housing costs display greater volatility with sharp increases and decreases in various years, whereas non-U.S. housing costs follow a smoother, gradual pattern with lower volatility. The U.S. housing price surges can be attributed to economic cycles, policy changes, or market disruptions, which result in more exaggerated movements compared to non-U.S. trends. While there are times that both trends move the same way, the overall pattern shows that U.S. housing prices experience more extreme movements, while non-U.S. countries take a generally more stable trajectory.
+
 ```{r}
 merged_data_summary <- merged_data %>%
   group_by(Year, Is_US) %>%
@@ -147,4 +149,3 @@ ggplot(merged_data_summary, aes(x = Year, y = Avg_Housing_Cost, color = Is_US, g
        color = "Country Type") +
   scale_color_manual(values = c("US" = "blue", "Non-US" = "red"))
 ```
-
