@@ -62,6 +62,7 @@ merged_data <- merged_data %>%
     Transportation_Cost = (Transportation_Cost_Percentage / 100) * Cost_of_Living,
     Tax_Cost = (Tax_Rate / 100) * Cost_of_Living
   )
+head(merged_data)
 ```
 
 ##Introduction: 
@@ -89,19 +90,17 @@ While creating an experiment is not ethically feasible, to improve upon our find
 ###Data / Visualization
 ```{r}
 ggplot(merged_data, aes(x = Year)) +
-  geom_bar(aes(y = Tax_Rate, fill = "Tax Rate"), stat = "identity", position = "dodge", alpha = 0.6) +
-  geom_bar(aes(y = Avg_SP500_Close / max(Avg_SP500_Close) * max(Tax_Rate), fill = "S&P 500"), stat = "identity", position = "dodge", alpha = 0.6) +
-  geom_smooth(aes(y = Tax_Rate, color = "Tax Rate Trend"), method = "lm", se = FALSE, size = 1.2) +
-  geom_smooth(aes(y = Avg_SP500_Close / max(Avg_SP500_Close) * max(Tax_Rate), color = "S&P 500 Trend"), method = "lm", se = FALSE, size = 1.2) +
-  scale_fill_manual(values = c("red", "blue")) +
-  scale_color_manual(values = c("darkred", "darkblue")) +
-  labs(title = "Tax Rate vs S&P 500 Over Time with Trend Lines",
+  geom_bar(aes(y = Avg_SP500_Close, fill = "S&P 500"), stat = "identity", position = "dodge", alpha = 0.6) +
+  geom_bar(aes(y = Tax_Cost, fill = "Tax Cost"), stat = "identity", position = "dodge", alpha = 0.6) +
+  geom_smooth(aes(y = Avg_SP500_Close, color = "S&P 500 Trend"), method = "lm", se = FALSE, size = 1.2) +
+  scale_fill_manual(values = c("blue", "red")) +
+  scale_color_manual(values = c("darkblue", "darkred")) +
+  labs(title = "S&P 500 vs. Tax Cost Over Time",
        x = "Year",
-       y = "Scaled Values",
+       y = "USD",
        fill = "Legend",
        color = "Trend Lines") +
   theme_minimal()
-
 ```
 
 
