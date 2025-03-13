@@ -76,8 +76,9 @@ What is the correlation of S&P 500 data against the average consumer price index
 
 The closing price is the cash value of the last transacted price before the market closes. It is used by investors to measure the stock markets performance. The consumer price index contains numbers that measure changes in the prices of goods and services purchased by house holds in US cities every year.These CPI values are calculated as the weighted averages of price changes for all US cities. This data was collected over the duration of 2010 to 2023.
 ```{r Research Question 1}
-merged_data %>%
-  ggplot(aes(Avg_SP500_Close, Avg_CPI)) + geom_line() +
+merged_data %>%ggplot(aes(Avg_SP500_Close, Avg_CPI)) +
+   geom_point() +
+   geom_smooth(method = "lm", se = FALSE) +
    labs(x = "S&P 500 Closing Price",
         y = "Consumer Price Index",
         title = paste("S&P 500 Closing Price vs Consumer Price Index from 2010 to 2023 per year"))
