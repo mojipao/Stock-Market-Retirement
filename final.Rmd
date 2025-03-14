@@ -1,10 +1,70 @@
 ---
 title: "Final Deliverable Stock-Market-Retirement"
 output: html_document
-author: Mohriz Murad, Rohan Rajesh, author3, author 4
+author: Mohriz Murad, Rohan Rajesh, Varun Panuganti, Pranav Sayal 
 date: "2025-02-27"
 ---
+## Abstract 
 
+For the objective of this project, we wanted to identify if stock market performance could be used to predict economic trends.
+Our analysis indicates a positive correlation between the S&P 500 closing price and the Consumer Price Index (CPI), suggesting that a strong stock market performance is linked to economic growth. ​Our data shows an inverse relationship between tax rates and the performance of the S&P 500. This relationship suggests implications for wealth distribution, with the primary beneficiaries of tax cuts potentially gaining the most from stock market returns. ​We also learned that U.S. housing costs are more volatile compared to non-U.S. counterparts. This indicates that housing costs are sensitive to national economic conditions. ​Finally, we learned that the growth in U.S. housing costs and the S&P 500 since 2000 highlights an interconnection driven by conditions in the United States
+
+## Introduction 
+
+The S&P 500 Index is one of the most widely used benchmarks for the U.S. stock market, representing the performance of 500 of the largest publicly traded companies. Understanding the factors that influence the S&P 500 is essential for investors, policymakers, and economists, as stock market fluctuations can have broad economic implications. Among these factors, tax rates, inflation—measured through the Consumer Price Index (CPI)—and housing costs have been identified as key economic indicators that potentially impact market behavior. While each of these variables has been extensively studied in economic literature, their precise relationship with stock market performance remains an area of debate. This analysis seeks to explore these relationships, providing a data-driven perspective on how inflation, taxation, and housing costs interact with the S&P 500 over time.
+Inflation, as measured by the CPI, reflects the rate at which consumer prices rise over time, serving as a crucial indicator of economic health. The CPI for U.S. cities captures changes in the cost of goods and services, influencing corporate profits, consumer spending, and ultimately stock prices. Historically, rising inflation has often led to increased interest rates, which can slow economic growth and affect market performance. However, the correlation between CPI and the S&P 500 is not always straightforward and warrants further investigation. Similarly, tax rates play a significant role in shaping market trends. Changes in tax policy can directly impact business profitability, affecting investor confidence and stock prices. Tax increases may reduce corporate earnings and discourage investment, whereas tax cuts can stimulate economic activity and boost market sentiment. However, tax policies are often shaped by broader political and economic forces, such as shifts in federal administration priorities.
+Housing costs represent another major economic factor that can influence stock market trends. In the U.S., housing affordability has become an increasing concern, with rising prices driven by interest rates, supply constraints, and economic cycles. Comparing U.S. housing costs to those in other countries provides insight into global affordability trends and potential disparities. Additionally, housing costs may have a direct relationship with the S&P 500, as higher housing expenses can reduce discretionary consumer spending, affecting corporate revenues and economic growth. Conversely, a booming housing market may boost investor confidence and contribute to market expansion. Given these considerations, this analysis seeks to answer several key research questions: (1) What is the correlation between the S&P 500 and the average CPI for U.S. cities from 1950 to 2023? (2) How do tax rates influence the S&P 500, and are tax changes driven by market performance or broader economic and political factors? (3) How do U.S. housing costs compare to those of non-U.S. countries from 2000 to 2023? (4) If there are differences in housing costs, what is the correlation between U.S. housing costs and the S&P 500 during this period?
+The significance of this analysis extends beyond academic interest. For investors, understanding these relationships can inform long-term investment strategies, helping them assess whether factors like inflation and tax rates should influence their portfolio decisions. Policymakers can use this research to evaluate the potential market impacts of tax reforms and economic policies, ensuring more informed decision-making. Businesses can also benefit by understanding how inflation, taxation, and housing costs affect corporate earnings and consumer spending, allowing for better strategic planning. By examining these relationships, this report aims to bridge gaps in understanding between key economic indicators and stock market performance, offering valuable insights into broader financial trends.
+
+## Data Sources
+
+### Sources of the Datasets and Data Collection
+
+The datasets used in our analysis were obtained from publicly available sources or scraped from open platforms. The S&P 500 stock dataset was scraped from Yahoo Finance, allowing us to track stock market performance over time. The Consumer Price Index (CPI) dataset was sourced from Federal Reserve Economic Data (FRED) and contains historical inflation data for urban consumers in U.S. cities. This dataset is publicly available and provides insights into changes in consumer purchasing power. The Cost of Living dataset was retrieved from Kaggle and includes key economic indicators such as monthly income, housing costs, tax rates, and other living expenses across multiple countries from 2000 to 2023. These datasets collectively provide a robust foundation for analyzing the relationship between stock market trends and economic indicators.  
+
+#### Dataset Sources:
+- Consumer Price Index (CPI) Dataset (FRED): [Link](https://fred.stlouisfed.org/series/CPIAUCSL)
+- Cost of Living Dataset (Kaggle): [Link](https://www.kaggle.com/datasets/heidarmirhajisadati/regional-cost-of-living-analysis)
+- Stock Market Dataset (S&P 500): Web Scraped from Yahoo Finance
+
+### Who Collected What Data
+Each dataset was gathered by different team members from publicly available sources. Rohan scraped the S&P 500 dataset from Yahoo Finance using a Python script. Varun sourced the CPI dataset from the FRED database, a widely trusted source for economic indicators. Mohriz found the Cost of Living dataset on Kaggle, which was contributed by a user performing regional economic analysis.
+
+### Usage Permissions
+All datasets were obtained from the public domain or were scraped from open-source libraries, ensuring accessibility for research purposes. However, each dataset may have its own usage permissions. The Yahoo Finance data (S&P 500) was scraped from an open-source platform, but Yahoo Finance may have restrictions on large-scale automated data collection. The FRED CPI dataset is publicly accessible with no commercial restrictions, allowing researchers to analyze inflation trends freely. The Kaggle Cost of Living dataset is also publicly available, though individual contributors on Kaggle may impose specific licensing terms. Despite these minor considerations, all datasets used in this project are open and freely accessible.
+
+### Dataset Representations
+Each dataset plays a unique role in our report. The S&P 500 stock dataset represents the price movements of the S&P 500 index over a specified period, which we used at both monthly and yearly levels. The CPI dataset measures inflation by tracking changes in consumer prices across U.S. cities, providing a key indicator of economic health. The Cost of Living dataset includes global economic factors such as income levels, housing expenses, and taxation, allowing us to compare the U.S. economy with other countries. By combining these datasets, we ensure a comprehensive examination of how inflation, tax policies, and housing costs correlate with stock market fluctuations.
+
+### Reasonings and Support
+The decision to use these datasets was driven by our research objective: to explore whether stock market trends correlate with real-world economic conditions. We aim to assess whether inflation, tax rates, and housing costs influence the S&P 500, or if stock market fluctuations impact economic stability. The CPI dataset helps us analyze inflation trends and their effect on consumer purchasing power. The Cost of Living dataset allows us to examine differences in affordability between the U.S. and other countries while assessing the influence of rising housing costs on the stock market. Lastly, the S&P 500 dataset provides historical market trends necessary for comparison. By integrating these datasets, we can determine whether the stock market serves as a predictor of economic conditions or whether economic trends drive stock market behavior.
+
+## Data
+
+### Dataset Dimensions  
+
+The S&P 500 stock dataset contains 55 rows and 8 columns. The original CPIAUCSL dataset contains 938 rows and 2 columns. The Cost of Living dataset consists of 501 rows and 11 columns.  
+
+### Row Representation  
+
+Each row in the S&P 500 stock dataset represents the stock market performance for a specific week, including details such as the opening price, closing price, and the highest and lowest price action during that period.  
+
+Each row in the CPIAUCSL dataset represents the average Consumer Price Index (CPI) for all U.S. cities per month.  
+
+Each row in the Cost of Living dataset is structured by year and country, containing various economic metrics related to living expenses, taxation, and affordability.  
+
+### Relevant Variables  
+
+The relevant variable in the S&P 500 dataset is the Close variable, which contains the closing price of the index at the end of each week.  
+
+In the Cost of Living dataset, the two primary variables of interest are housing cost and tax rate, as they directly impact economic conditions.  
+
+In the CPIAUCSL dataset, the key variable is CPI, which measures inflation trends by tracking the average price changes of consumer goods and services across U.S. cities on a monthly basis.  
+
+
+## Method
+
+### Code
 ```{r}
 library(tidyverse)
 getwd()
@@ -65,14 +125,45 @@ merged_data <- merged_data %>%
 head(merged_data)
 ```
 
-##Introduction: 
-As retirement
+### Data Cleaning and Processing Choices
 
-##Setup: Loading Libraries and Data 
+To ensure a structured and accurate dataset, we performed several data cleaning and processing steps before conducting our analysis. Each dataset had different structures, formats, and missing values, requiring specific processing choices.
+For the S&P 500 dataset, we extracted the year from the date column to match the timeframe of other datasets. Since the dataset contained daily or monthly stock prices, we computed the annual average closing price (Avg_SP500_Close) to ensure consistency in our analysis. Additionally, we filtered the data from 2000-2023 for housing cost-related questions and 1950-2023 for CPI analysis, though the merged dataset primarily focuses on the years 2000-2023.
+The Consumer Price Index (CPI) dataset required similar preprocessing. Because CPI values are reported monthly, we aggregated them into yearly averages (Avg_CPI) to align with the S&P 500 data. Missing CPI values were ignored in calculations (na.rm = TRUE) rather than explicitly removed, as CPI data is generally consistent across years.
+For the Cost of Living and Housing dataset, we created a new categorical variable (Is_US) to distinguish between U.S. and non-U.S. data instead of filtering non-U.S. data out. Additionally, since the dataset contained multiple records for each country in some years, we computed the mean for all numerical variables per country per year to ensure uniformity. Because housing costs were originally reported as a percentage of the total cost of living, we converted these percentages into actual monetary values by multiplying them by the total cost of living.
+The tax rate dataset was also processed to make it more meaningful. Rather than analyzing tax rates as percentages, we converted them into monetary values (Tax_Cost) by multiplying them by the total cost of living. This allowed us to compare actual tax burdens rather than just relative percentages. Missing tax rates were left as NA by default, rather than explicitly retained or imputed, ensuring transparency in the data.
 
-##Research Q1 
-###Data / Visualization
-What is the correlation of S&P 500 data against the average consumer price index average of U.S Cities, from 2010 - 2023? 
+### Merging Process
+
+To create a single dataset that incorporated all key economic indicators, we merged datasets through multiple steps. First, we merged the CPI dataset to ensure inflation data was available for all years. Next, we merged the S&P 500 data, ensuring that stock market data was only included for U.S. records. The Cost of Living dataset was merged using both Year and Country, allowing us to retain data for both U.S. and non-U.S. countries.
+After merging, we explicitly set Avg_SP500_Close to NA for non-U.S. countries to prevent incorrect assumptions about stock market performance globally. During this process, some years had multiple records for the same country due to variations in reported housing costs. To resolve this, we grouped by Year and Country and computed average values for all relevant variables to ensure one row per country per year.
+
+### Technical Decisions
+
+Handling missing data was an important consideration. For CPI and S&P 500 data, missing values were ignored in calculations (na.rm = TRUE), since these datasets are well-documented. However, for tax rates and housing costs, missing values were left as NA instead of being replaced with estimated values. This approach maintained the integrity of the dataset without introducing bias.
+To ensure consistency in calculations, percentage-based housing costs were converted into monetary values, and scaling adjustments were made where necessary when comparing tax costs to the S&P 500 to ensure meaningful visualizations. Outlier detection was considered, but no extreme values were removed, as fluctuations in tax rates, housing costs, and market values are expected over time.
+
+### Variables Used for each Research Question
+
+To address the research questions, different variables were selected based on relevance. For the correlation between the S&P 500 and CPI from 1950 to 2023, the primary variables were Avg_SP500_Close and Avg_CPI. To analyze the correlation between the S&P 500 and tax rates, the key variables were Avg_SP500_Close and Tax_Cost. The comparison of housing costs between the U.S. and other countries from 2000 to 2023 relied on Housing_Cost and Country. Finally, to examine the correlation between housing costs and the S&P 500, we focused on Housing_Costand Avg_SP500_Close.
+
+### Analytical Steps
+
+The first step in our analysis was computing correlations between CPI, tax cost, housing costs, and the S&P 500 using Pearson correlation coefficients to quantify relationships between these economic factors and market performance.
+Next, we created visualizations to illustrate trends. Scatter plots were used to explore relationships between housing costs and the S&P 500. Line charts helped visualize trends in housing costs across different countries. Additionally, bar graphs comparing S&P 500 values against tax costs were considered as a way to examine how tax burdens fluctuate relative to market trends.
+Finally, we interpreted economic trends by identifying periods of tax changes and their potential impact on market fluctuations. We also examined how housing cost disparities between the U.S. and other countries might influence economic stability. The CPI analysis was particularly useful in determining whether inflation had any measurable impact on stock market performance over time.
+
+### Challenges and Limitations 
+
+One of the main challenges was data availability and consistency. Some tax rate and cost-of-living data were missing for specific years, making certain trend analyses incomplete. Additionally, scaling differences among economic indicators made it challenging to compare tax costs directly with the S&P 500 values, requiring adjustments in visualization techniques.
+Another limitation was the complexity of causal relationships. While our analysis identified correlations, it could not definitively establish causation between tax rates, inflation, and stock market performance. External economic factors such as interest rates, government policies, and global trade conditions may also influence these relationships, but were not explicitly accounted for in our dataset.
+Lastly, comparing housing costs across different countries posed challenges due to variations in purchasing power, economic policies, and exchange rates. Direct cost comparisons had to be interpreted with caution, as absolute values may not fully capture affordability differences across regions.
+
+
+
+
+## Research Q1: What is the Correlation of S&P 500 Data Against the Average Consumer Price Index Average of U.S Cities, from 2010 - 2023?​
+### Data / Visualization
 
 The closing price is the cash value of the last transacted price before the market closes. It is used by investors to measure the stock markets performance. The consumer price index contains numbers that measure changes in the prices of goods and services purchased by house holds in US cities every year.These CPI values are calculated as the weighted averages of price changes for all US cities. This data was collected over the duration of 2010 to 2023.
 ```{r Research Question 1}
@@ -83,12 +174,22 @@ merged_data %>%ggplot(aes(Avg_SP500_Close, Avg_CPI)) +
         y = "Consumer Price Index",
         title = paste("S&P 500 Closing Price vs Consumer Price Index from 2010 to 2023 per year"))
 ```
+
+### Findings 
+
 After looking at this visualization, one can conclude that as the S&P 500 Closing Price increases, the Consumer Price Index increases as well. If the closing price is increasing, this means the stock market is performing better. Similarly, if the CPI is increasing, this means that the average price of goods purchased in US cities is increasing, meaning that people are spending more and there is economic growth. Ultimately, this trend suggests that strength in stock market performance can lead to economic growth. 
+
+### Limitations
 This data was collected from 2010 to 2023 and is monthly. For starters, it is essential to acknowledge that both the trends in the S&P 500 and CPI for US Cities can be affected by the same confounding factors such as inflation, the employment rate, and geopolitical events such as trade restrictions. Furthermore, correlation does not imply causation.
+
+### Potential Improvements
 While creating an experiment is not ethically feasible, to improve upon our findings, we could obtain data on some of the confounding variables such as inflation, the employment rate, and other geopolitical and economic factors. We could create visualizations on the trends between these factors and the S&P 500 and CPI. This will give us insight into causal factors. 
 
-##Research Q2
-###Data / Visualization
+## Research Q2: Is there a Correlation Between Changes in Tax Costs and the S&P 500’s Performance?
+
+### Results / Visualization
+
+The bar graph presents the relationship between the S&P 500 and tax cost over time from 2000 to 2023. Tax cost is represented in red bars, while the S&P 500's average closing price is shown in blue bars. A linear trend line for the S&P 500 (in dark blue) indicates an overall upward trajectory in stock market performance. While tax costs appear relatively stable with periodic fluctuations, the S&P 500 has shown significant growth, especially after 2010. Notably, tax costs do not exhibit a clear trend, suggesting that they may be influenced by external factors beyond the stock market’s performance.
 ```{r}
 ggplot(merged_data, aes(x = Year)) +
   geom_bar(aes(y = Avg_SP500_Close, fill = "S&P 500"), stat = "identity", position = "dodge", alpha = 0.6) +
@@ -96,7 +197,7 @@ ggplot(merged_data, aes(x = Year)) +
   geom_smooth(aes(y = Avg_SP500_Close, color = "S&P 500 Trend"), method = "lm", se = FALSE, size = 1.2) +
   scale_fill_manual(values = c("blue", "red")) +
   scale_color_manual(values = c("darkblue", "darkred")) +
-  labs(title = "S&P 500 vs. Tax Cost Over Time",
+  labs(title = "S&P 500 Close Price vs. Tax Cost Over Time",
        x = "Year",
        y = "USD",
        fill = "Legend",
@@ -104,9 +205,46 @@ ggplot(merged_data, aes(x = Year)) +
   theme_minimal()
 ```
 
+### Findings
+After analyzing this visualization, one can observe that the S&P 500 has experienced steady growth over time, while tax costs have fluctuated without a clear upward or downward trend. This suggests that changes in tax costs do not appear to be directly tied to the performance of the stock market. Although the S&P 500's increasing trend may reflect overall economic expansion, tax costs seem to be influenced by external factors such as fiscal policies, political decisions, and broader economic conditions. This is evident in certain periods where tax costs remain relatively stable despite significant stock market growth.
 
-##Research Q3
-###Data / Visualization
+### Limitations 
+This analysis relies on absolute tax cost values, rather than tax rates as a percentage of income or GDP, which could provide a more accurate representation of tax burden over time. Additionally, tax policy decisions are influenced by numerous external factors, including government policies, inflation, and federal budget deficits, which are not accounted for in this visualization. Furthermore, correlation does not imply causation, while the S&P 500 and tax costs are presented together, this does not confirm that one directly influences the other.
+
+### Potential Improvements 
+To improve upon these findings, future research could incorporate historical policy changes, such as tax reforms under different U.S. presidential administrations, to identify whether specific tax policies correlate with changes in stock market performance. Additionally, analyzing other macroeconomic indicators, such as GDP growth, inflation, and corporate earnings, could help determine the broader factors that drive both tax costs and stock market trends. Finally, statistical modeling techniques like regression analysis could be used to quantify the degree of correlation and account for confounding variables.
+
+## Research Q3: How does housing costs compare internationally vs. the United States?
+### Results / Visualization
+The long-term trends in average housing costs have some striking dissimilarities for the United States and non-U.S. countries for the years 2000 to 2023. The U.S. housing costs display greater volatility with sharp increases and decreases in various years, whereas non-U.S. housing costs follow a smoother, gradual pattern with lower volatility. The U.S. housing price surges can be attributed to economic cycles, policy changes, or market disruptions, which result in more exaggerated movements compared to non-U.S. trends. While there are times that both trends move the same way, the overall pattern shows that U.S. housing prices experience more extreme movements, while non-U.S. countries take a generally more stable trajectory.
+
+```{r}
+merged_data_summary <- merged_data %>%
+  group_by(Year, Is_US) %>%
+  summarize(Avg_Housing_Cost = mean(Housing_Cost, na.rm = TRUE))
+
+
+ggplot(merged_data_summary, aes(x = Year, y = Avg_Housing_Cost, color = Is_US, group = Is_US)) +
+  geom_line(size = 1.2) +
+  geom_point(size = 2) +
+  labs(title = "Housing Cost Trends Over Time",
+       x = "Year",
+       y = "Average Housing Cost",
+       color = "Country Type") +
+  scale_color_manual(values = c("US" = "blue", "Non-US" = "red"))
+```
+
+### Findings
+The analysis of U.S. housing costs and the S&P 500 from 2000 to 2023 indicates that external factors, like low interest rates and market demand in the United States, often contribute to growth in both markets, highlighting a potential connection during favorable economic conditions.
+
+### Limitations
+The use of average values in this study may not effectively capture sector-specific behaviors within the S&P 500, which could limit the applicability of the findings across different industries.
+
+### Potential Improvements 
+Future research could enhance the insights into these correlations by incorporating more detailed housing market data and conducting industry-specific analyses within the S&P 500.
+
+## Research Q4: What is the Correlation Between Average Housing Costs Per Year in the United States Versus the S&P 500 During the Years 2000-2023.​
+### Results / Visualization
 
 The correlation between the U.S housing costs and S&P is slightly positive as from 2000-2012, we can see that as the S&P 500 was increasing, the Housing market was pretty volatile going up and down. We can see that the relationship is positive, as the S&P 500 and Housing Market both are increasing since 2012. It's important to note the relationship is not linear or directly proportional. It's important to note the S&P 500 often reacts more to monetary policies, whereas the housing market is impacted more by demographic shifts. The correlation in this graph provides evidence that while markets move together in response to economic policies at the time, the movement between these two markets can be attributed to other reasons. The correlation between these two indicators provides insight into investment strategies for the future.
 
@@ -127,22 +265,33 @@ ggplot() +
        color = "Legend")
 ```
 
-##Research Q4
-###Data / Visualization
-The long-term trends in average housing costs have some striking dissimilarities for the United States and non-U.S. countries for the years 2000 to 2023. The U.S. housing costs display greater volatility with sharp increases and decreases in various years, whereas non-U.S. housing costs follow a smoother, gradual pattern with lower volatility. The U.S. housing price surges can be attributed to economic cycles, policy changes, or market disruptions, which result in more exaggerated movements compared to non-U.S. trends. While there are times that both trends move the same way, the overall pattern shows that U.S. housing prices experience more extreme movements, while non-U.S. countries take a generally more stable trajectory.
 
-```{r}
-merged_data_summary <- merged_data %>%
-  group_by(Year, Is_US) %>%
-  summarize(Avg_Housing_Cost = mean(Housing_Cost, na.rm = TRUE))
+### Findings
+Variations in housing costs could be a sign of changes in economy, inflation, and policies that impact affordability and overall financial health. There are striking differences between housing costs of US and non-US countries. The US' housing costs are more volatile as compared to the rest of the world which displays a smoother curve. The volatility in US housing costs can be attributed to economic cycles, policy changes or market disruptions which result in a more exaggerated movement in housing costs.
 
+### Limitations
+This analysis focusses on housing costs different countries. Since different countries inherently have different housing costs and economies, the data would obviously be different. Countries that aren't as developed will have cheaper housing costs which could skew the data.
 
-ggplot(merged_data_summary, aes(x = Year, y = Avg_Housing_Cost, color = Is_US, group = Is_US)) +
-  geom_line(size = 1.2) +
-  geom_point(size = 2) +
-  labs(title = "Housing Cost Trends Over Time",
-       x = "Year",
-       y = "Average Housing Cost",
-       color = "Country Type") +
-  scale_color_manual(values = c("US" = "blue", "Non-US" = "red"))
-```
+### Potential Improvements
+We would want to find a way to create a ratio of housing cost that is proportional to the economy of the country.
+
+## Collective Discussion
+
+### Interpretation of Results
+Our findings reveal significant relationships between stock market performance, inflation, taxation, and housing costs. The analysis of the S&P 500 and Consumer Price Index (CPI) suggests that inflationary trends have a measurable but complex impact on stock market returns. Historically, periods of high inflation have coincided with volatility in the S&P 500, reflecting investor concerns about purchasing power, corporate profits, and Federal Reserve policy responses. However, the correlation is not always linear, as market sentiment and external factors such as interest rates and economic policies also influence stock prices.
+Regarding taxation, our findings suggest that changes in tax rates have a mixed effect on stock market trends. While lower corporate tax rates can improve investor confidence and stimulate economic activity, broader economic conditions and policy changes also play crucial roles. The correlation between tax costs and the S&P 500 was present but not strong enough to establish direct causality, indicating that tax policy changes are part of a more complex economic landscape.
+The comparison of U.S. housing costs with those of other countries revealed that housing prices in the U.S. have risen at a faster rate in recent years. This trend suggests affordability challenges for American households, which could impact consumer spending and economic stability. Furthermore, our analysis indicated that housing costs and stock market performance are linked; rising housing prices can contribute to shifts in market behavior, as homeownership trends influence consumer wealth and investment strategies.
+
+### Limitations of the Data
+While our findings provide meaningful insights, several limitations must be acknowledged. First, our data sources cover different time spans, making it challenging to establish uniform comparisons. For example, the CPI dataset includes data from 1950 to 2023, whereas the Cost of Living dataset only spans from 2000 to 2023. This discrepancy limits the ability to assess long-term trends comprehensively.
+Additionally, our analysis relies on correlation rather than causation. While we identified relationships between inflation, taxation, housing costs, and stock market trends, external macroeconomic factors such as interest rates, government policies, and global market influences were not fully accounted for. These factors could play a significant role in shaping stock market behavior and should be considered in future studies.
+Data quality issues also presented challenges. Some datasets contained missing or incomplete values, particularly in tax-related data. To maintain data integrity, we chose not to impute missing values, which may have limited the completeness of certain analyses. Furthermore, the data aggregation process, such as averaging CPI and S&P 500 closing prices on a yearly basis, may have smoothed out short-term fluctuations that could provide additional insights.
+
+### Further Research Directions
+To further explore the relationships between economic indicators and stock market performance, future research should incorporate additional variables, such as interest rates, government spending, and employment data. A deeper analysis of policy changes, including the impact of specific tax reforms and monetary policy adjustments, could provide a more detailed understanding of economic dynamics.
+Another valuable direction would be a sector-specific analysis of the stock market. Our study focused on the overall S&P 500 index, but different sectors may react differently to inflation, taxation, and housing costs. Analyzing how industries such as real estate, technology, and consumer goods respond to these factors could offer more granular insights.
+Finally, incorporating global economic trends could strengthen the analysis. By comparing stock market reactions across different countries with varying tax policies, inflation rates, and housing markets, future research could better distinguish the factors that are unique to the U.S. versus those that are part of broader global trends.
+
+## Summary 
+
+Our findings emphasize that the stock market does not operate in isolation, it is shaped by a complex web of economic policies, inflationary trends, and housing market fluctuations. Investors and policymakers alike can leverage these insights to anticipate market shifts, assess policy impacts, and make informed financial decisions. Understanding these relationships enables stakeholders to navigate economic cycles strategically, optimize investments, and anticipate long-term market movements.
